@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
 
-        supportActionBar?.title = "TiTle"
+        supportActionBar?.title = "Title"
 
         navController = Navigation.findNavController(this, R.id.navigationHost)
 
