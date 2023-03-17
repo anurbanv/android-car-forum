@@ -12,4 +12,8 @@ class HomeViewModel : ViewModel() {
     fun onLicencePlateInputChange(value: String) {
         mutableState.value = mutableState.value?.copy(licencePlateInput = value)
     }
+
+    fun onSearchClick() {
+        // navigate to car
+    }
 }
