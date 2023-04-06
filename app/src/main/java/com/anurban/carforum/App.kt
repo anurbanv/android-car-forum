@@ -1,24 +1,17 @@
 package com.anurban.carforum
 
 import android.app.Application
-import androidx.room.Room
-import com.anurban.carforum.core.data.database.AppDatabase
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext.startKoin
 
 class App : Application() {
-
-    companion object {
-        lateinit var instance: App
-    }
-
-    lateinit var appDatabase: AppDatabase
 
     override fun onCreate() {
         super.onCreate()
 
-        instance = this
-
-        appDatabase = Room.databaseBuilder(
-            applicationContext, AppDatabase::class.java, "app-db"
-        ).build()
+        startKoin {
+            androidContext(this@App)
+            modules(appModule, viewModelModule)
+        }
     }
 }

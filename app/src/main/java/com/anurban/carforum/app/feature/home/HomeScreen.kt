@@ -1,32 +1,31 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.anurban.carforum.app.feature.home.compose
+package com.anurban.carforum.app.feature.home
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.anurban.carforum.app.feature.home.HomeScreenState
-import com.anurban.carforum.app.feature.home.HomeViewModel
-import com.anurban.carforum.app.feature.home.compose.HomeScreenEvent.LicencePlateInput
-import com.anurban.carforum.app.feature.home.compose.HomeScreenEvent.SearchCarLicencePlate
+import com.anurban.carforum.app.feature.home.HomeScreenEvent.LicencePlateInput
+import com.anurban.carforum.app.feature.home.HomeScreenEvent.SearchCarLicencePlate
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 
+@RootNavGraph(start = true)
+@Destination(start = true)
 @Composable
-fun HomeScreen(
-    homeViewModel: HomeViewModel,
-) {
-    val state = homeViewModel.state.observeAsState().value ?: return
-
+fun HomeScreen() {
     HomeScreenUi(
-        state = state,
+        state = HomeScreenState(),
         eventListener = { event ->
             when (event) {
-                is LicencePlateInput -> homeViewModel.onLicencePlateInputChange(event.value)
-                SearchCarLicencePlate -> homeViewModel.onSearchClick()
+                is LicencePlateInput -> {}
+                SearchCarLicencePlate -> {}
             }
         }
     )
@@ -37,7 +36,9 @@ private fun HomeScreenUi(
     state: HomeScreenState,
     eventListener: (HomeScreenEvent) -> Unit = {},
 ) {
-    Column {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+    ) {
         Text(text = "Welcome")
 
         TextField(
@@ -52,11 +53,6 @@ private fun HomeScreenUi(
         Text(text = "Latest Comments")
         // list of comments
     }
-}
-
-sealed class HomeScreenEvent {
-    data class LicencePlateInput(val value: String) : HomeScreenEvent()
-    object SearchCarLicencePlate : HomeScreenEvent()
 }
 
 @Preview

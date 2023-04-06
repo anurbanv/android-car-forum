@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.anurban.carforum.app.feature.detail.compose
+package com.anurban.carforum.app.feature.detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
@@ -8,23 +8,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
-import com.anurban.carforum.app.feature.detail.CarDetailsScreenState
-import com.anurban.carforum.app.feature.detail.CarDetailsViewModel
-import com.anurban.carforum.app.feature.detail.compose.CarDetailsScreenEvent.CommentInputChanged
-import com.anurban.carforum.app.feature.detail.compose.CarDetailsScreenEvent.DislikeCar
-import com.anurban.carforum.app.feature.detail.compose.CarDetailsScreenEvent.LikeCar
-import com.anurban.carforum.app.feature.detail.compose.CarDetailsScreenEvent.PostComment
+import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.CommentInputChanged
+import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.DislikeCar
+import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.LikeCar
+import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.PostComment
+import com.ramcosta.composedestinations.annotation.Destination
 
+@Destination
 @Composable
-fun CarDetailsScreen(
-    carDetailsViewModel: CarDetailsViewModel,
-) {
-    val state = carDetailsViewModel.state.observeAsState().value ?: return
+fun CarDetailsScreen() {
 
     CarDetailsScreenUi(
-        state = state,
+        state = CarDetailsScreenState(),
         eventListener = {
             when (it) {
                 is CommentInputChanged -> TODO()
@@ -60,13 +56,6 @@ private fun CarDetailsScreenUi(
 
         // list of comments
     }
-}
-
-sealed class CarDetailsScreenEvent {
-    object LikeCar : CarDetailsScreenEvent()
-    object DislikeCar : CarDetailsScreenEvent()
-    data class CommentInputChanged(val value: String) : CarDetailsScreenEvent()
-    object PostComment : CarDetailsScreenEvent()
 }
 
 @Preview
