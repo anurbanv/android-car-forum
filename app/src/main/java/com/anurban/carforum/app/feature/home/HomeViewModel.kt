@@ -39,7 +39,6 @@ class HomeViewModel(
                 carDao.insert(byLicencePlate)
             }
         }
-
         navigator.navigate(CarDetailsScreenDestination)
     }
 }
