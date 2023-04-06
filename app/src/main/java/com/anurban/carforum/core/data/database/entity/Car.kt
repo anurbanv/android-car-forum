@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "car")
 data class Car(
-    @PrimaryKey val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) var id: Long = 0,
     val licensePlate: String,
-    val likes: Long,
-    val dislikes: Long,
+    val likes: Long = 0,
+    val dislikes: Long = 0,
 )

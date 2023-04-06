@@ -11,22 +11,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.CommentInputChanged
 import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.DislikeCar
+import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.GoBack
 import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.LikeCar
 import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.PostComment
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import org.koin.androidx.compose.koinViewModel
 
 @Destination
 @Composable
-fun CarDetailsScreen() {
+fun CarDetailsScreen(
+    navigator: DestinationsNavigator,
+) {
+    val viewModel: CarDetailsViewModel = koinViewModel()
 
     CarDetailsScreenUi(
         state = CarDetailsScreenState(),
         eventListener = {
             when (it) {
-                is CommentInputChanged -> TODO()
-                DislikeCar -> TODO()
-                LikeCar -> TODO()
-                PostComment -> TODO()
+                is CommentInputChanged -> {}
+                DislikeCar -> {}
+                LikeCar -> {}
+                PostComment -> {}
+                GoBack -> navigator.popBackStack()
             }
         }
     )
@@ -38,6 +45,9 @@ private fun CarDetailsScreenUi(
     eventListener: (CarDetailsScreenEvent) -> Unit = {},
 ) {
     Column {
+        Button(onClick = { eventListener(GoBack) }) {
+            Text(text = "Go back")
+        }
         Text(text = "ABC 123")
         Button(onClick = { eventListener(LikeCar) }) {
             Text("Like")

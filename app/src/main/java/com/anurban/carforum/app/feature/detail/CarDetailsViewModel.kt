@@ -20,9 +20,10 @@ data class CarDetailsScreenState(
     val comments: List<Comment> = listOf(),
 )
 
-sealed class CarDetailsScreenEvent {
-    object LikeCar : CarDetailsScreenEvent()
-    object DislikeCar : CarDetailsScreenEvent()
-    data class CommentInputChanged(val value: String) : CarDetailsScreenEvent()
-    object PostComment : CarDetailsScreenEvent()
+sealed interface CarDetailsScreenEvent {
+    object GoBack: CarDetailsScreenEvent
+    object LikeCar : CarDetailsScreenEvent
+    object DislikeCar : CarDetailsScreenEvent
+    data class CommentInputChanged(val value: String) : CarDetailsScreenEvent
+    object PostComment : CarDetailsScreenEvent
 }

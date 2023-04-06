@@ -9,23 +9,34 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.anurban.carforum.app.feature.home.HomeScreenEvent.LicencePlateInput
 import com.anurban.carforum.app.feature.home.HomeScreenEvent.SearchCarLicencePlate
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import org.koin.androidx.compose.koinViewModel
 
 @RootNavGraph(start = true)
 @Destination(start = true)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navigator: DestinationsNavigator,
+) {
+    val viewModel: HomeViewModel = koinViewModel()
+
+    val state = viewModel.state.observeAsState().value ?: return
+
     HomeScreenUi(
-        state = HomeScreenState(),
+        state = state,
         eventListener = { event ->
-            when (event) {
-                is LicencePlateInput -> {}
-                SearchCarLicencePlate -> {}
+            with(event) {
+                when (this) {
+                    is LicencePlateInput -> viewModel.onLicencePlateInputChange(value)
+                    SearchCarLicencePlate -> viewModel.onSearchClick(navigator)
+                }
             }
         }
     )
