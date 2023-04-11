@@ -3,14 +3,23 @@ package com.anurban.carforum.app.feature.detail
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.anurban.carforum.core.data.CurrentCarManager
+import com.anurban.carforum.core.data.database.AppDatabase
 import com.anurban.carforum.core.data.database.entity.Car
 import com.anurban.carforum.core.data.database.entity.Comment
 import com.anurban.carforum.updateState
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class CarDetailsViewModel(
     currentCarManager: CurrentCarManager,
+    appDatabase: AppDatabase,
 ) : ViewModel() {
+
+    private val commentDao = appDatabase.commentDao()
 
     private val mutableState = MediatorLiveData<CarDetailsScreenState>().apply {
         value = CarDetailsScreenState()
@@ -24,11 +33,41 @@ class CarDetailsViewModel(
                 copy(car = it)
             }
         }
+        currentCarManager.state.value?.let { car ->
+            mutableState.addSource(commentDao.getAllByCarId(car.id)) {
+                mutableState.updateState {
+                    copy(comments = it)
+                }
+            }
+        }
+    }
+
+    fun onGoBackAction(navigator: DestinationsNavigator) {
+        mutableState.updateState { CarDetailsScreenState() }
+        navigator.popBackStack()
     }
 
     fun onCommentInputChange(value: String) {
         mutableState.updateState {
             copy(commentInput = value)
+        }
+    }
+
+    fun onPostCommentAction() {
+        val car = mutableState.value?.car ?: return
+        val commentInput = mutableState.value?.commentInput ?: return
+
+        viewModelScope.launch {
+            commentDao.insert(Comment(
+                text = commentInput,
+                carId = car.id,
+            ))
+
+            withContext(Main) {
+                mutableState.updateState {
+                    copy(commentInput = "")
+                }
+            }
         }
     }
 }

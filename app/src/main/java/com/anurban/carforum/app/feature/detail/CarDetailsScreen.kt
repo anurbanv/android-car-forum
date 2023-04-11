@@ -3,6 +3,8 @@
 package com.anurban.carforum.app.feature.detail
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -35,8 +37,8 @@ fun CarDetailsScreen(
                 is CommentInputChanged -> viewModel.onCommentInputChange(event.value)
                 DislikeCar -> {}
                 LikeCar -> {}
-                PostComment -> {}
-                GoBack -> navigator.popBackStack()
+                PostComment -> viewModel.onPostCommentAction()
+                GoBack -> viewModel.onGoBackAction(navigator)
             }
         }
     )
@@ -68,9 +70,13 @@ private fun CarDetailsScreenUi(
         Button(onClick = { eventListener(PostComment) }) {
             Text("Add comment")
         }
-        Text(text = "(x comments)")
+        Text(text = "(${state.comments.size} comments)")
 
-        // list of comments
+        LazyColumn {
+            items(state.comments) {
+                Text(text = it.text)
+            }
+        }
     }
 }
 
