@@ -30,9 +30,9 @@ fun CarDetailsScreen(
 
     CarDetailsScreenUi(
         state = state,
-        eventListener = {
-            when (it) {
-                is CommentInputChanged -> {}
+        eventListener = { event ->
+            when (event) {
+                is CommentInputChanged -> viewModel.onCommentInputChange(event.value)
                 DislikeCar -> {}
                 LikeCar -> {}
                 PostComment -> {}

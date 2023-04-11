@@ -9,6 +9,7 @@ import com.anurban.carforum.core.data.CurrentCarManager
 import com.anurban.carforum.core.data.database.AppDatabase
 import com.anurban.carforum.core.data.database.entity.Car
 import com.anurban.carforum.core.data.database.entity.Comment
+import com.anurban.carforum.updateState
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
@@ -28,7 +29,9 @@ class HomeViewModel(
     val state: LiveData<HomeScreenState> = mutableState
 
     fun onLicencePlateInputChange(value: String) {
-        mutableState.value = mutableState.value?.copy(licencePlateInput = value)
+        mutableState.updateState {
+            copy(licencePlateInput = value)
+        }
     }
 
     fun onSearchClick(navigator: DestinationsNavigator) {

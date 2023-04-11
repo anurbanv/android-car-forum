@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.anurban.carforum.core.data.CurrentCarManager
 import com.anurban.carforum.core.data.database.entity.Car
 import com.anurban.carforum.core.data.database.entity.Comment
+import com.anurban.carforum.updateState
 
 class CarDetailsViewModel(
     currentCarManager: CurrentCarManager,
@@ -19,7 +20,15 @@ class CarDetailsViewModel(
 
     init {
         mutableState.addSource(currentCarManager.state) {
-            mutableState.value = mutableState.value?.copy(car = it)
+            mutableState.updateState {
+                copy(car = it)
+            }
+        }
+    }
+
+    fun onCommentInputChange(value: String) {
+        mutableState.updateState {
+            copy(commentInput = value)
         }
     }
 }
