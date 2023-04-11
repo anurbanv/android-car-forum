@@ -5,14 +5,18 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.anurban.carforum.app.feature.destinations.CarDetailsScreenDestination
+import com.anurban.carforum.core.data.CurrentCarManager
 import com.anurban.carforum.core.data.database.AppDatabase
 import com.anurban.carforum.core.data.database.entity.Car
 import com.anurban.carforum.core.data.database.entity.Comment
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeViewModel(
     appDatabase: AppDatabase,
+    private val currentCarManager: CurrentCarManager,
 ) : ViewModel() {
 
     private val carDao = appDatabase.carDao()
@@ -33,13 +37,16 @@ class HomeViewModel(
         if (licencePlateInput.isNullOrEmpty()) return
 
         viewModelScope.launch {
-            var byLicencePlate = carDao.getByLicencePlate(licencePlateInput)
-            if (byLicencePlate == null) {
-                byLicencePlate = Car(licensePlate = licencePlateInput)
-                carDao.insert(byLicencePlate)
+            var car = carDao.getByLicencePlate(licencePlateInput)
+            if (car == null) {
+                car = Car(licensePlate = licencePlateInput)
+                carDao.insert(car)
+            }
+            currentCarManager.setCurrentCar(car)
+            withContext(Main) {
+                navigator.navigate(CarDetailsScreenDestination)
             }
         }
-        navigator.navigate(CarDetailsScreenDestination)
     }
 }
 

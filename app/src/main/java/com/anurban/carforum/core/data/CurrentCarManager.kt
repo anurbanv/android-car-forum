@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.anurban.carforum.core.data.database.entity.Car
 
-class CurrentCarManager() {
+class CurrentCarManager {
 
     private val mutableState = MediatorLiveData<Car>().apply {
         value = null

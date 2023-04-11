@@ -8,6 +8,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.tooling.preview.Preview
 import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.CommentInputChanged
 import com.anurban.carforum.app.feature.detail.CarDetailsScreenEvent.DislikeCar
@@ -25,8 +26,10 @@ fun CarDetailsScreen(
 ) {
     val viewModel: CarDetailsViewModel = koinViewModel()
 
+    val state = viewModel.state.observeAsState().value ?: return
+
     CarDetailsScreenUi(
-        state = CarDetailsScreenState(),
+        state = state,
         eventListener = {
             when (it) {
                 is CommentInputChanged -> {}
@@ -44,11 +47,14 @@ private fun CarDetailsScreenUi(
     state: CarDetailsScreenState,
     eventListener: (CarDetailsScreenEvent) -> Unit = {},
 ) {
+
+    val car = state.car ?: return
+
     Column {
         Button(onClick = { eventListener(GoBack) }) {
             Text(text = "Go back")
         }
-        Text(text = "ABC 123")
+        Text(text = car.licensePlate)
         Button(onClick = { eventListener(LikeCar) }) {
             Text("Like")
         }
