@@ -62,7 +62,10 @@ private fun HomeScreenUi(
         }
 
         Text(text = "Latest Comments")
-        // list of comments
+
+        state.latestComments.forEach {
+            Text(text = "${it.car.licensePlate} \t\t ${it.comment.text}")
+        }
     }
 }
 

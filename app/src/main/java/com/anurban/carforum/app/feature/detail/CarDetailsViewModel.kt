@@ -10,6 +10,7 @@ import com.anurban.carforum.core.data.database.entity.Car
 import com.anurban.carforum.core.data.database.entity.Comment
 import com.anurban.carforum.updateState
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -57,11 +58,13 @@ class CarDetailsViewModel(
         val car = mutableState.value?.car ?: return
         val commentInput = mutableState.value?.commentInput ?: return
 
-        viewModelScope.launch {
-            commentDao.insert(Comment(
-                text = commentInput,
-                carId = car.id,
-            ))
+        viewModelScope.launch(Default) {
+            commentDao.insert(
+                Comment(
+                    text = commentInput,
+                    carId = car.id,
+                )
+            )
 
             withContext(Main) {
                 mutableState.updateState {

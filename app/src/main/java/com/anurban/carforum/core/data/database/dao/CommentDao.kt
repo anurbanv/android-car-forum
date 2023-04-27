@@ -14,4 +14,7 @@ interface CommentDao {
 
     @Query("SELECT * FROM comment WHERE carId = :carId")
     fun getAllByCarId(carId: Long): LiveData<List<Comment>>
+
+    @Query("SELECT * FROM comment ORDER BY id DESC LIMIT 5")
+    fun getLatestComments(): LiveData<List<Comment>>
 }

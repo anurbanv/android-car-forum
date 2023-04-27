@@ -21,12 +21,27 @@ class HomeViewModel(
 ) : ViewModel() {
 
     private val carDao = appDatabase.carDao()
+    private val commentDao = appDatabase.commentDao()
 
     private val mutableState = MediatorLiveData<HomeScreenState>().apply {
         value = HomeScreenState()
     }
 
     val state: LiveData<HomeScreenState> = mutableState
+
+    init {
+        mutableState.addSource(commentDao.getLatestComments()) { comments ->
+            viewModelScope.launch {
+                val carComments = mutableListOf<CarComment>()
+                comments.forEach {
+                    carDao.getByCarId(it.carId)?.let { car ->
+                        carComments.add(CarComment(car = car, comment = it))
+                    }
+                }
+                mutableState.updateState { copy(latestComments = carComments) }
+            }
+        }
+    }
 
     fun onLicencePlateInputChange(value: String) {
         mutableState.updateState {
@@ -43,7 +58,8 @@ class HomeViewModel(
             var car = carDao.getByLicencePlate(licencePlateInput)
             if (car == null) {
                 car = Car(licensePlate = licencePlateInput)
-                carDao.insert(car)
+                val carId = carDao.insert(car)
+                car.id = carId
             }
             currentCarManager.setCurrentCar(car)
             withContext(Main) {
@@ -55,7 +71,7 @@ class HomeViewModel(
 
 data class HomeScreenState(
     val licencePlateInput: String = "",
-    val latestComments: List<Comment> = listOf(),
+    val latestComments: List<CarComment> = listOf(),
 )
 
 sealed class HomeScreenEvent {

@@ -10,10 +10,13 @@ import com.anurban.carforum.core.data.database.entity.Car
 interface CarDao {
 
     @Insert
-    suspend fun insert(car: Car)
+    suspend fun insert(car: Car): Long
 
     @Query("SELECT * FROM car WHERE licensePlate = :licencePlate")
     suspend fun getByLicencePlate(licencePlate: String): Car?
+
+    @Query("SELECT * FROM car WHERE id = :carId")
+    suspend fun getByCarId(carId: Long): Car?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(car: Car)
