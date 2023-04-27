@@ -35,8 +35,8 @@ fun CarDetailsScreen(
         eventListener = { event ->
             when (event) {
                 is CommentInputChanged -> viewModel.onCommentInputChange(event.value)
-                DislikeCar -> {}
-                LikeCar -> {}
+                LikeCar -> viewModel.addLikeAction()
+                DislikeCar -> viewModel.removeLikeAction()
                 PostComment -> viewModel.onPostCommentAction()
                 GoBack -> viewModel.onGoBackAction(navigator)
             }
@@ -49,7 +49,6 @@ private fun CarDetailsScreenUi(
     state: CarDetailsScreenState,
     eventListener: (CarDetailsScreenEvent) -> Unit = {},
 ) {
-
     val car = state.car ?: return
 
     Column {
@@ -58,10 +57,10 @@ private fun CarDetailsScreenUi(
         }
         Text(text = car.licensePlate)
         Button(onClick = { eventListener(LikeCar) }) {
-            Text("Like")
+            Text("Like ${car.likes}")
         }
         Button(onClick = { eventListener(DislikeCar) }) {
-            Text(text = "Dislike")
+            Text(text = "Dislike ${car.dislikes}")
         }
         TextField(
             value = state.commentInput,

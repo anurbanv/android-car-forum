@@ -16,11 +16,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CarDetailsViewModel(
-    currentCarManager: CurrentCarManager,
+    private val currentCarManager: CurrentCarManager,
     appDatabase: AppDatabase,
 ) : ViewModel() {
 
     private val commentDao = appDatabase.commentDao()
+
+    private val carDao = appDatabase.carDao()
 
     private val mutableState = MediatorLiveData<CarDetailsScreenState>().apply {
         value = CarDetailsScreenState()
@@ -71,6 +73,28 @@ class CarDetailsViewModel(
                     copy(commentInput = "")
                 }
             }
+        }
+    }
+
+    fun addLikeAction() {
+        viewModelScope.launch {
+            var car = currentCarManager.state.value ?: return@launch
+            car = car.copy(
+                likes = (car.likes + 1)
+            )
+            currentCarManager.setCurrentCar(car)
+            carDao.upsert(car)
+        }
+    }
+
+    fun removeLikeAction() {
+        viewModelScope.launch {
+            var car = currentCarManager.state.value ?: return@launch
+            car = car.copy(
+                dislikes = (car.dislikes + 1)
+            )
+            currentCarManager.setCurrentCar(car)
+            carDao.upsert(car)
         }
     }
 }
